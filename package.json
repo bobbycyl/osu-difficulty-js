@@ -1,0 +1,21 @@
+{
+  "name": "osu-difficulty",
+  "version": "0.0.1",
+  "description": "Calculate osu! beatmap difficulty using official PerformanceCalculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": ["osu", "difficulty"],
+  "author": "bobbycyl",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bobbycyl/osu-difficulty-js.git"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=16"
+  }
+}
