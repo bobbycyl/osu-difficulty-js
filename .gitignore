@@ -1,0 +1,6 @@
+osu-tools
+osu-tools/
+package-lock.json
+node_modules/
+OsuNodeHelper/bin/
+OsuNodeHelper/obj/

@@ -1,12 +1,10 @@
 # osu-difficulty-js
 
-使用子进程调用 osu-tools 完成谱面难度计算。
+使用子进程或 [node-api-dotnet](https://github.com/microsoft/node-api-dotnet) 调用 osu-tools 完成谱面难度计算。
 
-通过 edge-js 调用 .Net 太脆弱了，暂时选择使用 osu-tools 原生的 CLI 完成。
+## 方法一：使用子进程调用
 
-这个仓库只能算是 [osupp](https://github.com/bobbycyl/osupp) 的一个副产物罢了，虽然二者都很草率就是了。
-
-## 使用示例
+本仓库的 `osu-difficulty` 是一个 npm 包，
 
 ```js
 // calculate.js
@@ -31,26 +29,31 @@ async function main() {
 main();
 ```
 
-这里贴上 osu-tools 的帮助页面：
+## 方法二：使用 node-api-dotnet
 
-```
-Computes the difficulty of a beatmap.
+**⚠️ 注**：这部分内容没有做成 npm 包，以下仅为使用指引
 
-Usage: dotnet PerformanceCalculator.dll difficulty [options] <path>
+1. 克隆 osu-tools 仓库，编译 `PerformanceCalculator`，以 win-x64 架构为例。
 
-Arguments:
-  path                         Required. A beatmap file (.osu), beatmap ID, or a folder containing .osu files to compute
-                               the difficulty for.
+   ```bash
+   dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:IncludeNativeLibrariesForSelfExtract=true
+   ```
 
-Options:
-  -?|-h|--help                 Show help information.
-  -r|--ruleset[:<ruleset-id>]  Optional. The ruleset to compute the beatmap difficulty for, if it's a convertible
-                               beatmap.
-                               Values: 0 - osu!, 1 - osu!taiko, 2 - osu!catch, 3 - osu!mania
-                               Allowed values are: 0, 1, 2, 3.
-  -m|--m <mod>                 One for each mod. The mods to compute the difficulty with.Values: hr, dt, hd, fl, ez, 4k,
-                               5k, etc...
-  -o|--mod-option <option>     The options of mods, with one for each setting. Specified as acryonym_settingkey=value.
-                               Example: DT_speed_change=1.35
-  -j|--json                    Output results as JSON.
-```
+2. 安装 `node-api-dotnet`。
+
+   ```bash
+   npm install node-api-dotnet
+   ```
+
+3. 根据需求修改 `OsuNodeHelper` 项目，并按照与第 1 步相同的方法编译
+4. 在 JavaScript 中调用 `OsuNodeHelper`。调用方法可参考 [example.js](./example.js)。
+
+## 常见问题
+
+**Q1**：哪一种方法更好？
+
+**A1**：取决于应用场景。如果生产环境没有 .Net 运行时，甚至可以编译为单文件然后再通过子进程调用。
+
+**Q2**：为什么不能像 [osupp](https://github.com/bobbycyl/osupp) 那样在 JavaScript 中实例化一个 C# `calculator`？
+
+**A2**：测试下来，`node-api-dotnet` 对于复杂的 C# 泛型支持有限，仿照 `osu-tools` 封装计算过程并暴露一个公开的函数供 JavaScript 调用更加稳定。
